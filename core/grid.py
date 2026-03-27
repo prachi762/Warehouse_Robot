@@ -17,7 +17,6 @@ class Grid:
         moves = [(1,0),(-1,0),(0,1),(0,-1)]
         neighbors = []
 
-        # If no energy, no moves possible
         if state.energy <= 0:
             return neighbors
 
@@ -29,7 +28,6 @@ class Grid:
 
             new_collected = state.collected
 
-            # check item pickup
             for i, (ix, iy) in enumerate(self.items):
                 if ix == nx and iy == ny:
                     new_collected |= (1 << i)
