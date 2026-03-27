@@ -5,7 +5,7 @@ class Grid:
         self.N = N
         self.grid = [[0]*N for _ in range(N)]
 
-        self.items = []      # [(x,y), ...]
+        self.items = []      
         self.delivery = (0,0)
         self.start = (0,0)
         self.energy = 100
