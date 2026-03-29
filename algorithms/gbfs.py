@@ -41,4 +41,4 @@ def gbfs(grid, start_state, heuristic):
             counter += 1
             heapq.heappush(pq, (h_val, counter, neighbor))
 
-    return None, expansions, 0
+    return None, expansions, float('inf')
