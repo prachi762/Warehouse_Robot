@@ -4,7 +4,9 @@ from core.state import reconstruct_path
 def gbfs(grid, start_state, heuristic):
 
     pq = []
-    heapq.heappush(pq, (heuristic(start_state), start_state))
+    counter = 0  
+
+    heapq.heappush(pq, (heuristic(start_state), counter, start_state))
 
     visited = set()
     visited.add(start_state)
@@ -12,7 +14,7 @@ def gbfs(grid, start_state, heuristic):
     nodes_expanded = 0
 
     while pq:
-        h_val, current = heapq.heappop(pq)
+        h_val, _, current = heapq.heappop(pq)
         nodes_expanded += 1
 
         if grid.is_goal(current):
@@ -26,6 +28,7 @@ def gbfs(grid, start_state, heuristic):
 
             if neighbor not in visited:
                 visited.add(neighbor)
-                heapq.heappush(pq, (heuristic(neighbor), neighbor))
+                counter += 1
+                heapq.heappush(pq, (heuristic(neighbor), counter, neighbor))
 
     return None, nodes_expanded, float('inf')
