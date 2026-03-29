@@ -2,46 +2,43 @@ import heapq
 from core.state import reconstruct_path
 from utils.pareto import is_dominated, update_pareto
 
-
 def gbfs(grid, start_state, heuristic):
- 
     pq = []
     counter = 0
-    heapq.heappush(pq, (0, counter, start_state))
 
-    pareto = {}
-    key = (start_state.x, start_state.y, start_state.collected)
-    pareto[key] = [(start_state.cost, start_state.energy)]
+    h0 = heuristic(start_state, grid)
+    heapq.heappush(pq, (h0, counter, start_state))
 
-    nodes_expanded = 0
+    pareto = {}  
+    expansions = 0
 
     while pq:
-        cost, _, current = heapq.heappop(pq)
-        nodes_expanded += 1
+        _, _, current = heapq.heappop(pq)
+        expansions += 1
 
         if grid.is_goal(current):
-            return reconstruct_path(current), nodes_expanded, current.cost
+            return reconstruct_path(current), expansions, current.cost
+
+        key = (current.x, current.y, current.collected)
+        current_p_list = pareto.get(key, [])
+
+        if is_dominated(current_p_list, current.cost, current.energy, current.value):
+            continue
+
+        pareto[key] = update_pareto(current_p_list, current.cost, current.energy, current.value)
 
         for neighbor in grid.get_neighbors(current):
-
-            h_val = heuristic(neighbor)
-            if h_val > neighbor.energy:
+            if neighbor.energy < 0:
                 continue
 
-            c = neighbor.cost
-            e = neighbor.energy
-            key = (neighbor.x, neighbor.y, neighbor.collected)
+            n_key = (neighbor.x, neighbor.y, neighbor.collected)
+            neighbor_p_list = pareto.get(n_key, [])
 
-            if key not in pareto:
-                pareto[key] = [(c, e)]
-            else:
-                if is_dominated(pareto[key], c, e):
-                    continue
+            if is_dominated(neighbor_p_list, neighbor.cost, neighbor.energy, neighbor.value):
+                continue
 
-                pareto[key] = update_pareto(pareto[key], c, e)
-
+            h_val = heuristic(neighbor, grid)
             counter += 1
-            heapq.heappush(pq, (c, counter, neighbor))
+            heapq.heappush(pq, (h_val, counter, neighbor))
 
-
-    return None, nodes_expanded, float('inf')
+    return None, expansions, 0
