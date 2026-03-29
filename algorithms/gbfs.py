@@ -1,34 +1,47 @@
 import heapq
 from core.state import reconstruct_path
+from utils.pareto import is_dominated, update_pareto
+
 
 def gbfs(grid, start_state, heuristic):
-
+ 
     pq = []
-    counter = 0  
+    counter = 0
+    heapq.heappush(pq, (0, counter, start_state))
 
-    heapq.heappush(pq, (heuristic(start_state), counter, start_state))
-
-    visited = set()
-    visited.add(start_state)
+    pareto = {}
+    key = (start_state.x, start_state.y, start_state.collected)
+    pareto[key] = [(start_state.cost, start_state.energy)]
 
     nodes_expanded = 0
 
     while pq:
-        h_val, _, current = heapq.heappop(pq)
+        cost, _, current = heapq.heappop(pq)
         nodes_expanded += 1
 
         if grid.is_goal(current):
-            path = reconstruct_path(current)
-            return path, nodes_expanded, current.cost
+            return reconstruct_path(current), nodes_expanded, current.cost
 
         for neighbor in grid.get_neighbors(current):
 
-            if heuristic(neighbor) > neighbor.energy:
+            h_val = heuristic(neighbor)
+            if h_val > neighbor.energy:
                 continue
 
-            if neighbor not in visited:
-                visited.add(neighbor)
-                counter += 1
-                heapq.heappush(pq, (heuristic(neighbor), counter, neighbor))
+            c = neighbor.cost
+            e = neighbor.energy
+            key = (neighbor.x, neighbor.y, neighbor.collected)
+
+            if key not in pareto:
+                pareto[key] = [(c, e)]
+            else:
+                if is_dominated(pareto[key], c, e):
+                    continue
+
+                pareto[key] = update_pareto(pareto[key], c, e)
+
+            counter += 1
+            heapq.heappush(pq, (c, counter, neighbor))
+
 
     return None, nodes_expanded, float('inf')
