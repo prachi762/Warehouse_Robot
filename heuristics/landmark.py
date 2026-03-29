@@ -24,6 +24,8 @@ def bfs_from_landmark(grid, start):
                 q.append((nx, ny))
 
     return dist
+
+
 def precompute_landmarks(grid, landmarks):
     """
     Precompute distance tables for all landmarks
@@ -37,6 +39,8 @@ def precompute_landmarks(grid, landmarks):
         dist_table[l] = bfs_from_landmark(grid, l)
 
     return dist_table
+
+
 def landmark_heuristic(state, dx, dy, dist_table, landmarks):
     """
     ALT-style Landmark heuristic
@@ -49,14 +53,17 @@ def landmark_heuristic(state, dx, dy, dist_table, landmarks):
         d_ld = dist_table[l][dx][dy]
         d_ln = dist_table[l][state.x][state.y]
 
-        # handle unreachable cells (just in case)
+        # Skip unreachable cases
         if d_ld == -1 or d_ln == -1:
             continue
 
         val = abs(d_ld - d_ln)
-        max_val = max(max_val, val)
+        if val > max_val:
+            max_val = val
 
     return max_val
+
+
 def get_landmark_heuristic(dx, dy, dist_table, landmarks):
     """
     Returns a callable heuristic function
@@ -66,4 +73,3 @@ def get_landmark_heuristic(dx, dy, dist_table, landmarks):
         return landmark_heuristic(state, dx, dy, dist_table, landmarks)
 
     return h
-
