@@ -125,15 +125,3 @@ This is stronger than H1 and still admissible for A*.
 - Greedy follows the heuristic only, so it can be fast but suboptimal.
 - A* combines actual energy used so far with heuristic estimate of remaining energy.
 
-## 10. Notes for demo
-
-For your presentation/demo, the strongest comparison is:
-
-- BFS
-- UCS
-- Greedy + H1
-- Greedy + H2
-- A* + H1
-- A* + H2
-
-This clearly shows the effect of both heuristics and why A* is the most suitable algorithm for the warehouse problem.
