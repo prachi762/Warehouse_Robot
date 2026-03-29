@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import time
 import csv
 from core.state import State
@@ -13,13 +17,10 @@ from heuristics.landmark import (
     precompute_landmarks
 )
 
-from demo_cases import (
-    easy_case_1, easy_case_2,
-    medium_case_1, medium_case_2,
-    hard_case_1, hard_case_2,
-    energy_case_1, energy_case_2
-)
-
+from demo_cases.easy_cases import easy_case_1, easy_case_2
+from demo_cases.medium_cases import medium_case_1, medium_case_2
+from demo_cases.hard_cases import hard_case_1, hard_case_2
+from demo_cases.energy_cases import energy_case_1, energy_case_2
 
 def run_all():
 
@@ -131,10 +132,8 @@ def save_results_csv(results):
     with open(filename, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
 
-        # Header
         writer.writerow(["Case", "Algorithm", "Cost", "Expanded", "Time"])
 
-        # Data
         for case, case_results in results:
             for r in case_results:
                 writer.writerow([
