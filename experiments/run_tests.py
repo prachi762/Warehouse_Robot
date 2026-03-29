@@ -22,6 +22,24 @@ from demo_cases.medium_cases import medium_case_1, medium_case_2
 from demo_cases.hard_cases import hard_case_1, hard_case_2
 from demo_cases.energy_cases import energy_case_1, energy_case_2
 
+from visualization.visualizer import WarehouseVisualizer
+
+def get_actions_from_path(path):
+    if not path or len(path) < 2:
+        return ""
+    
+    actions = []
+    for i in range(len(path) - 1):
+        r1, c1 = path[i]
+        r2, c2 = path[i+1]
+        
+        if r2 > r1: actions.append("D")
+        elif r2 < r1: actions.append("U")
+        elif c2 > c1: actions.append("R")
+        elif c2 < c1: actions.append("L")
+        
+    return " ".join(actions)
+
 def run_all():
 
     cases = [
@@ -38,19 +56,18 @@ def run_all():
     results = []
 
     for case_name, case_fn in cases:
-        print(f"\n===== Running Case: {case_name} =====")
+        print("\n" + "=" * 62)
+        print(f"RUNNING {case_name.upper().replace('_', ' ')} CASE")
+        print("=" * 62)
 
         grid = case_fn()
         dx, dy = grid.delivery
 
-        # Heuristics
         h_manhattan = get_manhattan(dx, dy)
-
         landmarks = [(0, 0), (grid.N - 1, grid.N - 1)]
         dist_table = precompute_landmarks(grid, landmarks)
         h_landmark = get_landmark_heuristic(dx, dy, dist_table, landmarks)
 
-        # Algorithms
         algos = [
             ("BFS", bfs, None),
             ("UCS", ucs, None),
@@ -78,7 +95,60 @@ def run_all():
             else:
                 path, expanded, cost = algo(grid, start_state)
 
-            runtime = round(time.time() - start_time, 5)
+            runtime = round(time.time() - start_time, 6)
+
+            vis = WarehouseVisualizer(grid, title=f"{case_name}_{name}")
+
+            path_states = []
+            if path is not None and cost != float('inf'):
+                for (px, py) in path:
+                    dummy_state = type("State", (), {"x": px, "y": py, "collected": 0, "energy": 0, "value": 0})
+                    path_states.append(dummy_state)
+            
+            if path_states:
+                original_stdout = sys.stdout 
+                sys.stdout = open(os.devnull, 'w') 
+                vis.save_final_results(path_states, explored_keys_states=None, delay=0.0)
+                sys.stdout = original_stdout
+
+            found_solution = path is not None and cost != float('inf')
+            steps = len(path) - 1 if found_solution else 0
+            actions_str = get_actions_from_path(path) if found_solution else ""
+            
+            heuristic_name = "-"
+            if "Manhattan" in name: heuristic_name = "Manhattan"
+            elif "Landmark" in name: heuristic_name = "Landmark"
+            
+            algo_base_name = name.split('-')[0]
+            
+            snapshot_text = os.path.join(vis.dirs['paths'], 'final_path_result.png') if found_solution else "-"
+            frames_text = f"{vis.frame_count} files in {vis.dirs['frames']}" if found_solution else "-"
+
+            output_text = (
+                f"Algorithm      : {algo_base_name}\n"
+                f"Heuristic      : {heuristic_name}\n"
+                f"Found solution : {found_solution}\n"
+                f"Steps          : {steps}\n"
+                f"Total energy   : {cost}\n"
+                f"Nodes expanded : {expanded}\n"
+                f"Runtime (s)    : {runtime:.6f}\n"
+                f"Actions        : {actions_str}\n"
+                f"Path           : {path}\n"
+                f"Saved snapshot : {snapshot_text}\n"
+                f"Saved frames   : {frames_text}\n"
+                + "=" * 62
+            )
+
+            print(output_text)
+
+            safe_file_name = f"{name.replace('*', 'star')}_stats.txt"
+            stats_file_path = os.path.join(vis.dirs['paths'], safe_file_name)
+            
+            with open(stats_file_path, "w") as f:
+                f.write("=" * 62 + "\n")
+                f.write(f"RUNNING {case_name.upper().replace('_', ' ')} CASE\n")
+                f.write("=" * 62 + "\n")
+                f.write(output_text + "\n")
 
             case_results.append({
                 "Algorithm": name,
@@ -89,42 +159,7 @@ def run_all():
 
         results.append((case_name, case_results))
 
-        print_table(case_name, case_results)
-
-    save_results_txt(results)
     save_results_csv(results)
-
-
-# ------------------------------
-
-def print_table(case, case_results):
-    print(f"\nResults for {case}:\n")
-
-    print(f"{'Algorithm':<20} {'Cost':<10} {'Expanded':<15} {'Time(s)':<10}")
-    print("-" * 60)
-
-    for r in case_results:
-        print(f"{r['Algorithm']:<20} {r['Cost']:<10} {r['Expanded']:<15} {r['Time']:<10}")
-
-
-# ------------------------------
-
-def save_results_txt(results):
-    filename = f"experiments/results_{int(time.time())}.txt"
-
-    with open(filename, "w") as f:
-        for case, case_results in results:
-            f.write(f"\n===== Case: {case} =====\n\n")
-            f.write(f"{'Algorithm':<20} {'Cost':<10} {'Expanded':<15} {'Time(s)':<10}\n")
-            f.write("-" * 60 + "\n")
-
-            for r in case_results:
-                f.write(f"{r['Algorithm']:<20} {r['Cost']:<10} {r['Expanded']:<15} {r['Time']:<10}\n")
-
-    print(f"\nTXT results saved to: {filename}")
-
-
-# ------------------------------
 
 def save_results_csv(results):
     filename = f"experiments/results_{int(time.time())}.csv"
@@ -144,10 +179,9 @@ def save_results_csv(results):
                     r["Time"]
                 ])
 
-    print(f"CSV results saved to: {filename}")
+    print(f"\nCSV results saved to: {filename}")
 
 
-# ------------------------------
 
 if __name__ == "__main__":
     run_all()
