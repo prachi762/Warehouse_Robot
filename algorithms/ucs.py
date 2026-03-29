@@ -1,37 +1,42 @@
 import heapq
 from core.state import reconstruct_path
+from utils.pareto import is_dominated, update_pareto
+
 
 def ucs(grid, start_state):
 
     pq = []
-    counter = 0 
-
+    counter = 0
     heapq.heappush(pq, (0, counter, start_state))
 
-    best_cost = {}
-    best_cost[start_state] = 0
+    pareto = {}
+    key = (start_state.x, start_state.y, start_state.collected)
+    pareto[key] = [(0, start_state.energy)]
 
     nodes_expanded = 0
 
     while pq:
         cost, _, current = heapq.heappop(pq)
-
-        if cost > best_cost[current]:
-            continue
-
         nodes_expanded += 1
 
         if grid.is_goal(current):
-            path = reconstruct_path(current)
-            return path, nodes_expanded, cost
+            return reconstruct_path(current), nodes_expanded, cost
 
         for neighbor in grid.get_neighbors(current):
 
-            new_cost = neighbor.cost
+            c = neighbor.cost
+            e = neighbor.energy
+            key = (neighbor.x, neighbor.y, neighbor.collected)
 
-            if neighbor not in best_cost or new_cost < best_cost[neighbor]:
-                best_cost[neighbor] = new_cost
-                counter += 1
-                heapq.heappush(pq, (new_cost, counter, neighbor))
+            if key not in pareto:
+                pareto[key] = [(c, e)]
+            else:
+                if is_dominated(pareto[key], c, e):
+                    continue
+
+                pareto[key] = update_pareto(pareto[key], c, e)
+
+            counter += 1
+            heapq.heappush(pq, (c, counter, neighbor))
 
     return None, nodes_expanded, float('inf')
