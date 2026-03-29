@@ -31,6 +31,10 @@ class Grid:
 
         if state.energy == 0:
             return neighbors
+        
+        payload_weight = sum(weight for i, weight in enumerate(self.item_weights) 
+                             if (state.collected & (1 << i)))
+        move_cost = 1 + payload_weight
 
         for dx, dy in moves:
             nx, ny = state.x + dx, state.y + dy
