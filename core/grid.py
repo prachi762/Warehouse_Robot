@@ -28,9 +28,9 @@ class Grid:
 
             new_collected = state.collected
 
-            for i, (ix, iy) in enumerate(self.items):
-                if ix == nx and iy == ny:
-                    new_collected |= (1 << i)
+            if (nx, ny) in self.item_map:
+                i = self.item_map[(nx, ny)]
+                new_collected |= (1 << i)
 
             new_state = State(
                 nx,
