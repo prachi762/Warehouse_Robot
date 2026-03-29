@@ -61,7 +61,6 @@ def animate_path(grid, path, delay=0.2):
 
         visited.add((x, y))
 
-        # create a dummy state-like object
         dummy = type("State", (), {"x": x, "y": y})
 
         print_grid(grid, dummy, visited)
