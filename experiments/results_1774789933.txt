@@ -1,0 +1,88 @@
+
+===== Case: easy_1 =====
+
+Algorithm            Cost       Expanded        Time(s)   
+------------------------------------------------------------
+BFS                  18         382             0.00351   
+UCS                  18         382             0.00302   
+GBFS-Manhattan       18         19              0.0       
+GBFS-Landmark        20         35              0.001     
+A*-Manhattan         18         76              0.001     
+A*-Landmark          18         102             0.0015    
+
+===== Case: easy_2 =====
+
+Algorithm            Cost       Expanded        Time(s)   
+------------------------------------------------------------
+BFS                  14         127             0.001     
+UCS                  14         127             0.00101   
+GBFS-Manhattan       14         15              0.0       
+GBFS-Landmark        16         26              0.0       
+A*-Manhattan         14         64              0.00053   
+A*-Landmark          14         82              0.0       
+
+===== Case: medium_1 =====
+
+Algorithm            Cost       Expanded        Time(s)   
+------------------------------------------------------------
+BFS                  62         3116            0.02105   
+UCS                  62         3116            0.02329   
+GBFS-Manhattan       62         67              0.00102   
+GBFS-Landmark        74         269             0.00505   
+A*-Manhattan         62         957             0.00951   
+A*-Landmark          62         3010            0.05329   
+
+===== Case: medium_2 =====
+
+Algorithm            Cost       Expanded        Time(s)   
+------------------------------------------------------------
+BFS                  38         1253            0.01249   
+UCS                  38         1253            0.01236   
+GBFS-Manhattan       38         40              0.001     
+GBFS-Landmark        50         87              0.0015    
+A*-Manhattan         38         241             0.0042    
+A*-Landmark          38         336             0.00352   
+
+===== Case: hard_1 =====
+
+Algorithm            Cost       Expanded        Time(s)   
+------------------------------------------------------------
+BFS                  138        25258           0.23002   
+UCS                  138        25258           0.28906   
+GBFS-Manhattan       138        512             0.00905   
+GBFS-Landmark        170        323             0.01464   
+A*-Manhattan         138        4831            0.08198   
+A*-Landmark          138        22182           0.56072   
+
+===== Case: hard_2 =====
+
+Algorithm            Cost       Expanded        Time(s)   
+------------------------------------------------------------
+BFS                  inf        3444            0.03925   
+UCS                  inf        3444            0.03209   
+GBFS-Manhattan       0          52089           0.87805   
+GBFS-Landmark        0          6481            0.08879   
+A*-Manhattan         0          6483            0.08805   
+A*-Landmark          0          6481            0.09363   
+
+===== Case: energy_1 =====
+
+Algorithm            Cost       Expanded        Time(s)   
+------------------------------------------------------------
+BFS                  inf        273             0.001     
+UCS                  inf        273             0.00201   
+GBFS-Manhattan       0          928             0.00654   
+GBFS-Landmark        0          1081            0.01334   
+A*-Manhattan         0          1               0.0       
+A*-Landmark          0          1               0.0       
+
+===== Case: energy_2 =====
+
+Algorithm            Cost       Expanded        Time(s)   
+------------------------------------------------------------
+BFS                  38         996             0.00654   
+UCS                  38         996             0.00807   
+GBFS-Manhattan       38         39              0.00201   
+GBFS-Landmark        40         3533            0.05579   
+A*-Manhattan         38         320             0.00351   
+A*-Landmark          38         566             0.00651   
