@@ -65,10 +65,7 @@ def landmark_heuristic(state, dx, dy, dist_table, landmarks):
 
 
 def get_landmark_heuristic(dx, dy, dist_table, landmarks):
-    """
-    Returns a callable heuristic function
-    """
-
+   
     def h(state):
         return landmark_heuristic(state, dx, dy, dist_table, landmarks)
 
