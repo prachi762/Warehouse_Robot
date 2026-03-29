@@ -4,7 +4,9 @@ from core.state import reconstruct_path
 def ucs(grid, start_state):
 
     pq = []
-    heapq.heappush(pq, (0, start_state))
+    counter = 0 
+
+    heapq.heappush(pq, (0, counter, start_state))
 
     best_cost = {}
     best_cost[start_state] = 0
@@ -12,7 +14,7 @@ def ucs(grid, start_state):
     nodes_expanded = 0
 
     while pq:
-        cost, current = heapq.heappop(pq)
+        cost, _, current = heapq.heappop(pq)
 
         if cost > best_cost[current]:
             continue
@@ -25,11 +27,11 @@ def ucs(grid, start_state):
 
         for neighbor in grid.get_neighbors(current):
 
-            new_cost = neighbor.cost  
+            new_cost = neighbor.cost
 
             if neighbor not in best_cost or new_cost < best_cost[neighbor]:
                 best_cost[neighbor] = new_cost
-                heapq.heappush(pq, (new_cost, neighbor))
+                counter += 1
+                heapq.heappush(pq, (new_cost, counter, neighbor))
 
     return None, nodes_expanded, float('inf')
-
