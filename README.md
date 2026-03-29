@@ -92,7 +92,7 @@ This ensures the algorithms sweep the warehouse methodically rather than backtra
 ---
 
 ## Authors
-**Prachi Garg** *2023A7PS0548P*
-**Jyotsna Lal** *2023A7PS0660P*
-**Soham Kudva** *2023A7PS0589P*
-**Daksh Tyagi** *2023A7PS0647P*
+* **Prachi Garg** *2023A7PS0548P*
+* **Jyotsna Lal** *2023A7PS0660P*
+* **Soham Kudva** *2023A7PS0589P*
+* **Daksh Tyagi** *2023A7PS0647P*
