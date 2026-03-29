@@ -11,7 +11,7 @@ def ucs(grid, start_state):
 
     pareto = {}
     key = (start_state.x, start_state.y, start_state.collected)
-    pareto[key] = [(0, start_state.energy)]
+    pareto[key] = [(start_state.cost, start_state.energy, start_state.value)]
 
     nodes_expanded = 0
 
@@ -24,17 +24,15 @@ def ucs(grid, start_state):
 
         for neighbor in grid.get_neighbors(current):
 
-            c = neighbor.cost
-            e = neighbor.energy
+            c, e, v = neighbor.cost, neighbor.energy, neighbor.value
             key = (neighbor.x, neighbor.y, neighbor.collected)
 
             if key not in pareto:
-                pareto[key] = [(c, e)]
+                pareto[key] = [(c, e, v)]
             else:
-                if is_dominated(pareto[key], c, e):
+                if is_dominated(pareto[key], c, e, v):
                     continue
-
-                pareto[key] = update_pareto(pareto[key], c, e)
+                pareto[key] = update_pareto(pareto[key], c, e, v)
 
             counter += 1
             heapq.heappush(pq, (c, counter, neighbor))
