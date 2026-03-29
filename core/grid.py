@@ -17,7 +17,7 @@ class Grid:
         moves = [(1,0),(-1,0),(0,1),(0,-1)]
         neighbors = []
 
-        if state.energy <= 0:
+        if state.energy == 0:
             return neighbors
 
         for dx, dy in moves:
