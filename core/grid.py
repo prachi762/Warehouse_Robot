@@ -44,3 +44,12 @@ class Grid:
             neighbors.append(new_state)
 
         return neighbors
+     def is_goal(self, state):
+        k = len(self.items)
+        dx, dy = self.delivery
+
+        return (
+            state.collected == (1 << k) - 1 and
+            state.x == dx and
+            state.y == dy
+        )
