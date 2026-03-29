@@ -1,5 +1,5 @@
 import time
-from demo_cases.load_cases import load_case
+from core.state import State
 
 from algorithms.bfs import bfs
 from algorithms.ucs import ucs
@@ -12,35 +12,37 @@ from heuristics.landmark import (
     precompute_landmarks
 )
 
+from demo_cases import (
+    easy_case_1,
+    medium_case_1,
+    hard_case_1,
+    energy_case_1
+)
+
 
 def run_all():
 
-    cases = ["easy", "medium", "hard"]
+    cases = [
+        ("easy_1", easy_case_1),
+        ("medium_1", medium_case_1),
+        ("hard_1", hard_case_1),
+        ("energy_1", energy_case_1),
+    ]
 
     results = []
 
-    for case in cases:
-        print(f"\n===== Running Case: {case} =====")
+    for case_name, case_fn in cases:
+        print(f"\n===== Running Case: {case_name} =====")
 
-        grid = load_case(case)
-
-        start_state = __import__("core.state", fromlist=["State"]).State(
-            grid.start[0],
-            grid.start[1],
-            0,
-            grid.energy
-        )
-
+        grid = case_fn()
         dx, dy = grid.delivery
 
-        # Heuristics
         h_manhattan = get_manhattan(dx, dy)
 
         landmarks = [(0,0), (grid.N-1, grid.N-1)]
         dist_table = precompute_landmarks(grid, landmarks)
         h_landmark = get_landmark_heuristic(dx, dy, dist_table, landmarks)
 
-        # Algorithms list
         algos = [
             ("BFS", bfs, None),
             ("UCS", ucs, None),
@@ -54,6 +56,13 @@ def run_all():
 
         for name, algo, heuristic in algos:
 
+            start_state = State(
+                grid.start[0],
+                grid.start[1],
+                0,
+                grid.energy
+            )
+
             start_time = time.time()
 
             if heuristic:
@@ -61,25 +70,23 @@ def run_all():
             else:
                 path, expanded, cost = algo(grid, start_state)
 
-            end_time = time.time()
-
-            runtime = end_time - start_time
+            runtime = round(time.time() - start_time, 5)
 
             case_results.append({
                 "Algorithm": name,
                 "Cost": cost,
                 "Expanded": expanded,
-                "Time": round(runtime, 5)
+                "Time": runtime
             })
 
-        results.append((case, case_results))
+        results.append((case_name, case_results))
 
-        # Print table
-        print_table(case, case_results)
+        print_table(case_name, case_results)
 
-    # Save results
     save_results(results)
 
+
+# ------------------------------
 
 def print_table(case, case_results):
     print(f"\nResults for {case}:\n")
@@ -90,6 +97,8 @@ def print_table(case, case_results):
     for r in case_results:
         print(f"{r['Algorithm']:<20} {r['Cost']:<10} {r['Expanded']:<15} {r['Time']:<10}")
 
+
+# ------------------------------
 
 def save_results(results):
     with open("experiments/results.txt", "w") as f:
@@ -102,6 +111,8 @@ def save_results(results):
             for r in case_results:
                 f.write(f"{r['Algorithm']:<20} {r['Cost']:<10} {r['Expanded']:<15} {r['Time']:<10}\n")
 
+
+# ------------------------------
 
 if __name__ == "__main__":
     run_all()
