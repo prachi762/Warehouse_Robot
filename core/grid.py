@@ -6,7 +6,8 @@ class Grid:
         self.grid = [[0]*N for _ in range(N)]
 
         self.items = []      
-        self.item_map = {}   
+        self.item_map = {}
+        self.item_weights = []   
 
         self.delivery = (0,0)
         self.start = (0,0)
@@ -14,7 +15,12 @@ class Grid:
 
     def set_items(self, items):
         self.items = items
-        self.item_map = {pos: i for i, pos in enumerate(items)}
+        self.item_map = {}
+        self.item_weights = []
+        
+        for i, (x, y, w) in enumerate(items):
+            self.item_map[(x, y)] = i
+            self.item_weights.append(w)
 
     def is_valid(self, x, y):
         return 0 <= x < self.N and 0 <= y < self.N and self.grid[x][y] == 0
@@ -33,10 +39,15 @@ class Grid:
                 continue
 
             new_collected = state.collected
+            new_value = state.value   
 
             if (nx, ny) in self.item_map:
                 i = self.item_map[(nx, ny)]
-                new_collected |= (1 << i)
+
+                if not (state.collected & (1 << i)):
+                    new_collected |= (1 << i)
+                    new_value += self.item_weights[i]
+
 
             new_state = State(
                 nx,
@@ -44,7 +55,8 @@ class Grid:
                 new_collected,
                 state.energy - 1,
                 state.cost + 1,
-                state
+                state,
+                new_value
             )
 
             neighbors.append(new_state)
