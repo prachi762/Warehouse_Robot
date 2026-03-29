@@ -6,9 +6,15 @@ class Grid:
         self.grid = [[0]*N for _ in range(N)]
 
         self.items = []      
+        self.item_map = {}   
+
         self.delivery = (0,0)
         self.start = (0,0)
         self.energy = 100
+
+    def set_items(self, items):
+        self.items = items
+        self.item_map = {pos: i for i, pos in enumerate(items)}
 
     def is_valid(self, x, y):
         return 0 <= x < self.N and 0 <= y < self.N and self.grid[x][y] == 0
@@ -44,7 +50,8 @@ class Grid:
             neighbors.append(new_state)
 
         return neighbors
-     def is_goal(self, state):
+
+    def is_goal(self, state):
         k = len(self.items)
         dx, dy = self.delivery
 
