@@ -1,11 +1,12 @@
 class State:
-    def __init__(self, x, y, collected, energy, cost=0, parent=None):
+    def __init__(self, x, y, collected, energy, cost=0, parent=None,value=0):
         self.x = x
         self.y = y
         self.collected = collected 
         self.energy = energy
         self.cost = cost            
-        self.parent = parent        
+        self.parent = parent  
+        self.value = value      
 
     def __hash__(self):
         return hash((self.x, self.y, self.collected, self.energy))
