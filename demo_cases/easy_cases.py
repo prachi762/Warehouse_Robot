@@ -8,9 +8,8 @@ def easy_case_1():
         (2,2,5),     
         (5,5,20)    
     ])
-    g.energy = 50
+    g.energy = 1000  
     return g
-
 
 def easy_case_2():
     g = Grid(8)
@@ -19,6 +18,5 @@ def easy_case_2():
     g.set_items([
         (3,3,10)
     ])
-    g.energy = 30
+    g.energy = 500   
     return g
-
