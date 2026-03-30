@@ -1,3 +1,4 @@
+
 import os
 import sys
 import cv2
@@ -84,15 +85,17 @@ class WarehouseVisualizer:
 
             draw.rectangle([rx, ry, rx + 30, ry + 30], fill="#2ecc71", outline="#27ae60")
 
+            current_energy = getattr(state, 'energy', 0)
+            max_energy = getattr(self.grid, 'energy', float('inf')) 
             stats = (
-                f"{self.algorithm_name} | Energy: {getattr(state, 'energy', 0)} "
+                f"{self.algorithm_name} | Energy: {current_energy}/{max_energy} "
                 f"| Value: {getattr(state, 'value', 0)}"
             )
+            text_color = "red" if current_energy > max_energy else "black"
         else:
             stats = f"{self.algorithm_name} | Initial Grid"
-
-        draw.text((10, 20), stats, fill="black")
-
+            text_color = "black"
+        draw.text((10, 20), stats, fill=text_color)
         return img
 
     def save_canvas_as_image(self, category, filename, state=None, explored_keys=None, path_history=None):
@@ -213,6 +216,16 @@ class WarehouseVisualizer:
 
     def save_final_results(self, path_states, explored_keys_states=None, delay=0.05):
         print(f"[{self.algorithm_name}] -> Generating frames in background...")
+
         self.save_initial_grid()
+        
+        if not path_states:
+            print(f"[{self.algorithm_name}] -> PATH FAILED. Generating terrain map...")
+
+            self.save_canvas_as_image("frames", "frame_0000.png", state=None)
+
+            self.generate_mp4(fps=10)
+            return
+        
         self.save_path_frames(path_states, explored_keys_states=explored_keys_states)
         self.generate_mp4(fps=10)
