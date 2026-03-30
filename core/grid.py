@@ -23,42 +23,45 @@ class Grid:
             self.item_weights.append(w)
 
     def is_valid(self, x, y):
-        return 0 <= x < self.N and 0 <= y < self.N and self.grid[x][y] == 0
+        return 0 <= x < self.N and 0 <= y < self.N and self.grid[y][x] != 1
 
     def get_neighbors(self, state):
         moves = [(1,0),(-1,0),(0,1),(0,-1)]
         neighbors = []
 
-        if state.energy == 0:
+        if state.energy <= 0:
             return neighbors
         
-        payload_weight = sum(weight for i, weight in enumerate(self.item_weights) 
-                             if (state.collected & (1 << i)))
-        move_cost = 1 + payload_weight
-
         for dx, dy in moves:
             nx, ny = state.x + dx, state.y + dy
 
             if not self.is_valid(nx, ny):
                 continue
 
+            terrain_cost = self.grid[ny][nx]
+            if terrain_cost == 0:
+                terrain_cost = 1
+
             new_collected = state.collected
             new_value = state.value   
 
             if (nx, ny) in self.item_map:
                 i = self.item_map[(nx, ny)]
-
                 if not (state.collected & (1 << i)):
                     new_collected |= (1 << i)
                     new_value += self.item_weights[i]
 
+            payload_weight = sum(weight for i, weight in enumerate(self.item_weights) 
+                                 if (new_collected & (1 << i)))
+
+            total_move_cost = terrain_cost + payload_weight
 
             new_state = State(
                 nx,
                 ny,
                 new_collected,
-                state.energy - 1,
-                state.cost + 1,
+                state.energy - total_move_cost, 
+                state.cost + total_move_cost,   
                 state,
                 new_value
             )
