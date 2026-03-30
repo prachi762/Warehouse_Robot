@@ -101,11 +101,10 @@ def run_all():
             vis = WarehouseVisualizer(grid, title=f"{case_name}_{name}")
 
             path_states = []
+            path_coords = []
             if path is not None and cost != float('inf'):
-                for (px, py) in path:
-                    dummy_state = type("State", (), {"x": px, "y": py, "collected": 0, "energy": 0, "value": 0})
-                    path_states.append(dummy_state)
-
+                path_states = path
+                path_coords = [(s.x, s.y) for s in path_states]
             original_stdout = sys.stdout 
             sys.stdout = open(os.devnull, 'w') 
             vis.save_final_results(path_states, explored_keys_states=None, delay=0.0)
