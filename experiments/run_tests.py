@@ -40,6 +40,7 @@ def get_actions_from_path(path):
         
     return " ".join(actions)
 
+
 def run_all():
 
     cases = [
@@ -104,12 +105,11 @@ def run_all():
                 for (px, py) in path:
                     dummy_state = type("State", (), {"x": px, "y": py, "collected": 0, "energy": 0, "value": 0})
                     path_states.append(dummy_state)
-            
-            if path_states:
-                original_stdout = sys.stdout 
-                sys.stdout = open(os.devnull, 'w') 
-                vis.save_final_results(path_states, explored_keys_states=None, delay=0.0)
-                sys.stdout = original_stdout
+
+            original_stdout = sys.stdout 
+            sys.stdout = open(os.devnull, 'w') 
+            vis.save_final_results(path_states, explored_keys_states=None, delay=0.0)
+            sys.stdout = original_stdout
 
             found_solution = path is not None and cost != float('inf')
             steps = len(path) - 1 if found_solution else 0
@@ -160,6 +160,7 @@ def run_all():
         results.append((case_name, case_results))
 
     save_results_csv(results)
+
 
 def save_results_csv(results):
     filename = f"experiments/results_{int(time.time())}.csv"
