@@ -2,47 +2,50 @@ import heapq
 from core.state import reconstruct_path
 from utils.pareto import is_dominated, update_pareto
 
-
 def astar(grid, start_state, heuristic):
     pq = []
     counter = 0
 
-    start_h = heuristic(start_state, grid)
-    heapq.heappush(pq, (start_state.cost + start_h, counter, start_state))
+    h0 = heuristic(start_state, grid)
+    f0 = start_state.cost + h0
 
-    pareto = {}
-    key = (start_state.x, start_state.y, start_state.collected)
-    pareto[key] = [(start_state.cost, start_state.energy, start_state.value)]
+    heapq.heappush(pq, (f0, counter, start_state))
 
-    nodes_expanded = 0
+    pareto = {}  
+    expansions = 0
 
     while pq:
         _, _, current = heapq.heappop(pq)
-        nodes_expanded += 1
+        expansions += 1
 
         if grid.is_goal(current):
-            return reconstruct_path(current), nodes_expanded, current.cost
+            return reconstruct_path(current), expansions, current.cost
+
+        key = (current.x, current.y, current.collected)
+        current_p_list = pareto.get(key, [])
+
+        if is_dominated(current_p_list, current.cost, current.energy, current.value):
+            continue
+
+        pareto[key] = update_pareto(current_p_list, current.cost, current.energy, current.value)
 
         for neighbor in grid.get_neighbors(current):
-            h_val = heuristic(neighbor, grid)
-
-            if h_val > neighbor.energy:
+            if neighbor.energy < 0:
                 continue
 
-            key = (neighbor.x, neighbor.y, neighbor.collected)
-            c = neighbor.cost
-            e = neighbor.energy
-            v = neighbor.value
+            n_key = (neighbor.x, neighbor.y, neighbor.collected)
+            neighbor_p_list = pareto.get(n_key, [])
 
-            if key not in pareto:
-                pareto[key] = [(c, e, v)]
-            else:
-                if is_dominated(pareto[key], c, e, v):
-                    continue
+            if is_dominated(neighbor_p_list, neighbor.cost, neighbor.energy, neighbor.value):
+                continue
 
-                pareto[key] = update_pareto(pareto[key], c, e, v)
-
+            h_val = heuristic(neighbor, grid)
+            
+            if h_val > neighbor.energy:
+                continue
+                
+            f_val = neighbor.cost + h_val
             counter += 1
-            heapq.heappush(pq, (c + h_val, counter, neighbor))
+            heapq.heappush(pq, (f_val, counter, neighbor))
 
-    return None, nodes_expanded, float("inf")
+    return None, expansions, float('inf')
