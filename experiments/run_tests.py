@@ -112,7 +112,7 @@ def run_all():
 
             found_solution = path is not None and cost != float('inf')
             steps = len(path) - 1 if found_solution else 0
-            actions_str = get_actions_from_path(path) if found_solution else ""
+            actions_str = get_actions_from_path(path_coords) if found_solution else ""
             
             heuristic_name = "-"
             if "Manhattan" in name: heuristic_name = "Manhattan"
@@ -132,7 +132,7 @@ def run_all():
                 f"Nodes expanded : {expanded}\n"
                 f"Runtime (s)    : {runtime:.6f}\n"
                 f"Actions        : {actions_str}\n"
-                f"Path           : {path}\n"
+                f"Path           : {path_coords}\n"
                 f"Saved snapshot : {snapshot_text}\n"
                 f"Saved frames   : {frames_text}\n"
                 + "=" * 62
