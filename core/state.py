@@ -19,7 +19,8 @@ class State:
 
 def reconstruct_path(state):
     path = []
-    while state:
-        path.append((state.x, state.y))
-        state = state.parent
+    current = state
+    while current is not None:
+        path.append(current) 
+        current = current.parent 
     return path[::-1]
