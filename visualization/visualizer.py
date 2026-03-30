@@ -37,6 +37,7 @@ class WarehouseVisualizer:
         self.frame_count = 0
 
     def _make_pil_image(self, state=None, explored_keys=None, path_history=None):
+        """Draws the grid in the background using Pillow."""
         img = Image.new("RGB", (self.canvas_w, self.canvas_h), "white")
         draw = ImageDraw.Draw(img)
 
@@ -52,10 +53,10 @@ class WarehouseVisualizer:
                 if self.grid.grid[y][x] == 1:
                     fill = "#2d3436"  
                 elif (x, y) == self.grid.delivery:
-                    fill = "#e74c3c"  
+                    fill = "#e74c3c" 
                 elif (x, y) == self.grid.start:
-                    fill = "#3498db" 
-s
+                    fill = "#3498db"  
+
                 if explored_keys and (x, y) in {(k[0], k[1]) for k in explored_keys}:
                     if fill == "white":
                         fill = "#dfe6e9"  
@@ -105,7 +106,7 @@ s
             row_chars = ["#"]
             for x in range(self.grid.N):
                 char = "."
-
+                
                 cell_value = self.grid.grid[y][x]
                 if cell_value == 1:
                     char = "#"
