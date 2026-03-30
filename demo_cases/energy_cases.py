@@ -9,7 +9,12 @@ def energy_case_1():
         (7,7,50)  
     ])
 
-    g.energy = 20
+    g.energy = 45
+    
+    for y in range(4, 7):
+        for x in range(4, 7):
+            g.grid[y][x] = 3
+            
     return g
 
 
@@ -23,5 +28,10 @@ def energy_case_2():
         (15,15,40)   
     ])
 
-    g.energy = 40
+    g.energy = 70
+
+    for y in range(2, 18):
+        for x in range(12, 14):
+            g.grid[y][x] = 5
+            
     return g
