@@ -44,6 +44,13 @@ Warehouse_Robot/
 
 ---
 
+## Extras / Supporting Material
+1. **GRP_17_PPT USED IN DEMO FOR EXTRA UNDERSTANDING:** Presentation explaining problem setup, algorithms, heuristics, and demo flow
+2. **GRP_17_empirical_validation:** Document with detailed experimental analysis and performance comparison
+3. **D1 & D2 (PDFs):** Previous submissions included for reference and project progression
+
+These materials provide a complete view of the project’s development, implementation, evaluation and deeper theoretical understanding.
+
 ## Installation & Setup
 
 1. **Clone the repository:**
