@@ -81,7 +81,7 @@ Upon completion, the script will generate an `outputs/` folder inside the `visua
 * **BFS (Breadth-First Search):** Serves as a baseline, uninformed search algorithm. It explores equally in all directions to find the path with the fewest *steps*. However, it ignores varying terrain costs, meaning it often fails to find the most energy-efficient route.
 * **UCS (Uniform Cost Search):** The cost-aware baseline. Unlike BFS, UCS factors in the actual energy weight of the floor tiles. It guarantees the absolute lowest-cost (most energy-efficient) path. However, because it lacks a heuristic to guide it, it expands a massive number of nodes and struggles heavily on `hard` and `energy` test cases.
 * **GBFS (Greedy Best-First Search):** An informed search that aggressively pursues the lowest heuristic value. It is incredibly fast and explores very few nodes, but it does not guarantee the optimal (lowest cost) path.
-* **A* Search:** The optimal informed search. By prioritizing $$f(n) = g(n) + h(n)$$, A* perfectly balances the energy cost so far with the estimated distance remaining. It guarantees the most energy-efficient path while expanding significantly fewer nodes than BFS or UCS.
+* **A\* Search:** The optimal informed search. By prioritizing $$f(n) = g(n) + h(n)$$, A* perfectly balances the energy cost so far with the estimated distance remaining. It guarantees the most energy-efficient path while expanding significantly fewer nodes than BFS or UCS.
 
 ### The L3 Heuristic Upgrade
 Both `GBFS` and `A*` rely on a custom multi-objective heuristic. Instead of blindly pointing to the delivery zone, the heuristic calculates:
